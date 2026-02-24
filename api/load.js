@@ -1,4 +1,6 @@
 const ALLOWED_AGENTS = [
+  "roblox android app",
+  "robloxapp",
   "delta",
   "hydrogen",
   "synapse",
@@ -11,10 +13,9 @@ const ALLOWED_AGENTS = [
   "evon",
   "xeno",
   "solara",
-  "roblox",
 ];
 
-// Your Lua script (paste yours here)
+// Paste your Lua script here
 const SCRIPT = `
 -- Your script here
 print("Loaded!")
@@ -76,33 +77,4 @@ module.exports = (req, res) => {
 
   res.setHeader("Content-Type", "text/plain");
   return res.status(200).send(SCRIPT);
-};    .line { width: 60px; height: 1px; background: #ff3c3c55; margin: 20px auto; }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <div class="lock">&#128274;</div>
-    <h1>ACCESS DENIED</h1>
-    <div class="line"></div>
-    <p>This endpoint is restricted to authorized executors only.</p>
-    <p class="sub">Unauthorized access attempts are logged.</p>
-  </div>
-</body>
-</html>`;
-}
-
-module.exports = (req, res) => {
-  if (!isExecutor(req)) {
-    res.setHeader("Content-Type", "text/html");
-    return res.status(403).send(deniedPage());
-  }
-
-  try {
-    const scriptPath = path.join(process.cwd(), "scripts", "main.lua");
-    const script = fs.readFileSync(scriptPath, "utf8");
-    res.setHeader("Content-Type", "text/plain");
-    return res.status(200).send(script);
-  } catch (e) {
-    return res.status(500).send("-- Script not found");
-  }
 };
