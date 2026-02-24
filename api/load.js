@@ -1,38 +1,28 @@
-
-const fs = require("fs");
-const path = require("path");
-
 const ALLOWED_AGENTS = [
-  "Synapse X",
-  "Script-Ware",
-  "KRNL",
-  "Fluxus",
-  "Delta",
-  "Hydrogen",
-  "Oxygen U",
-  "Wave",
-  "Comet",
-  "Evon",
-  "Coco Z",
-  "Xeno",
-  "Solara",
-  "Roblox",
+  "delta",
+  "hydrogen",
+  "synapse",
+  "script-ware",
+  "krnl",
+  "fluxus",
+  "oxygen",
+  "wave",
+  "comet",
+  "evon",
+  "xeno",
+  "solara",
+  "roblox",
 ];
 
-const SECRET_KEY = process.env.SECRET_KEY;
+// Your Lua script (paste yours here)
+const SCRIPT = `
+-- Your script here
+print("Loaded!")
+`.trim();
 
 function isExecutor(req) {
-  const ua = req.headers["user-agent"] || "";
-  const key = req.headers["x-secret-key"] || req.query.key || "";
-
-  const agentMatch = ALLOWED_AGENTS.some((agent) =>
-    ua.toLowerCase().includes(agent.toLowerCase())
-  );
-
-  const keyMatch = SECRET_KEY && key === SECRET_KEY;
-
-  // BOTH must pass
-  return agentMatch && keyMatch;
+  const ua = (req.headers["user-agent"] || "").toLowerCase();
+  return ALLOWED_AGENTS.some((agent) => ua.includes(agent));
 }
 
 function deniedPage() {
@@ -64,6 +54,29 @@ function deniedPage() {
     h1 { font-size: 36px; letter-spacing: 4px; margin-bottom: 12px; }
     .sub { color: #666; font-size: 13px; margin-top: 10px; }
     .line { width: 60px; height: 1px; background: #ff3c3c55; margin: 20px auto; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="lock">&#128274;</div>
+    <h1>ACCESS DENIED</h1>
+    <div class="line"></div>
+    <p>This endpoint is restricted to authorized executors only.</p>
+    <p class="sub">Unauthorized access attempts are logged.</p>
+  </div>
+</body>
+</html>`;
+}
+
+module.exports = (req, res) => {
+  if (!isExecutor(req)) {
+    res.setHeader("Content-Type", "text/html");
+    return res.status(403).send(deniedPage());
+  }
+
+  res.setHeader("Content-Type", "text/plain");
+  return res.status(200).send(SCRIPT);
+};    .line { width: 60px; height: 1px; background: #ff3c3c55; margin: 20px auto; }
   </style>
 </head>
 <body>
