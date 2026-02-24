@@ -1,1 +1,6 @@
-
+{
+  "version": 2,
+  "routes": [
+    { "src": "/load", "dest": "/api/load.js" }
+  ]
+}
